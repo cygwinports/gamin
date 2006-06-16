@@ -1,0 +1,12 @@
+category: Libs
+requires: cygwin
+external-source: gamin
+sdesc: "File and directory monitoring system (development)"
+ldesc: "Gamin is a file and directory monitoring system defined to be
+a subset of the FAM (File Alteration Monitor) system.
+
+ The main goals of the project are:
+ 1/ minimize the security model of FAM
+ 2/ simplify the code base
+ 3/ provide an API and ABI compatible replacement for FAM
+ 4/ try to fix some other issues like resource consumption"
