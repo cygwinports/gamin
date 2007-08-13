@@ -10,24 +10,24 @@ a subset of the FAM (File Alteration Monitor) system.
  4/ try to fix some other issues like resource consumption
 
 Runtime requirements:
-  cygwin-1.5.19-4
-  glib2-runtime-2.6.6-2
-
-The python bindings also require:
-  python-2.4.1-1
+  cygwin-1.5.24-2
+  glib2-2.12.13-1
+(python-gamin)
+  python-2.5.1-3
 
 Build requirements:
 (besides corresponding -devel packages)
-  cygwin-1.5.19-4
-  autoconf2.5-2.59-3
-  automake1.9-1.9.6-1
-  binutils-20050610-1
-  gawk-3.1.5-2
-  gcc-core-3.4.4-1
-  libtool1.5-1.5.20-2
-  make-3.80-1
-  pkgconfig-0.17.2-2
-  sed-4.1.4-1
+  cygwin-1.5.24-2
+  autoconf2.5-2.61-1
+  automake1.9-1.9.6-2
+  binutils-20060817-1
+  cygport-0.3.5-1
+  gawk-3.1.5-4
+  gcc-core-3.4.4-3
+  libtool1.5-1.5.23a-2
+  make-3.81-1
+  pkg-config-0.21-1
+  sed-4.1.5-2
 
 Canonical website:
   http://www.gnome.org/~veillard/gamin/
@@ -38,17 +38,17 @@ Canonical download:
 -------------------------------------------
 
 Build instructions:
-  unpack gamin-0.1.7-X-src.tar.bz2
+  unpack gamin-0.1.9-X-src.tar.bz2
     if you use setup to install this src package, it will be
 	 unpacked under /usr/src automatically
   cd /usr/src
-  ./gamin-0.1.7-X.sh all
+  cygport ./gamin-0.1.9-X.cygport all
 
 This will create:
-  /usr/src/gamin-0.1.7-X-src.tar.bz2
-  /usr/src/gamin-0.1.7-X.tar.bz2
-  /usr/src/gamin-devel-0.1.7-X.tar.bz2
-  /usr/src/pygamin-0.1.7-X.tar.bz2
+  /usr/src/gamin-0.1.9-X-src.tar.bz2
+  /usr/src/gamin-0.1.9-X.tar.bz2
+  /usr/src/gamin-devel-0.1.9-X.tar.bz2
+  /usr/src/python-gamin-0.1.9-X.tar.bz2
 
 -------------------------------------------
 
@@ -57,24 +57,17 @@ Files included in the main package:
   /usr/bin/cygfam-0.dll
   /usr/bin/cyggamin-1-0.dll
   /usr/sbin/gam_server.exe
-  /usr/share/doc/Cygwin/gamin-0.1.7.README
-  /usr/share/doc/gamin-0.1.7/AUTHORS
-  /usr/share/doc/gamin-0.1.7/ChangeLog
-  /usr/share/doc/gamin-0.1.7/COPYING
-  /usr/share/doc/gamin-0.1.7/COPYRIGHT
-  /usr/share/doc/gamin-0.1.7/INSTALL
-  /usr/share/doc/gamin-0.1.7/NEWS
-  /usr/share/doc/gamin-0.1.7/README
-  /usr/share/doc/gamin-0.1.7/TODO
+  /usr/share/doc/Cygwin/gamin-0.1.9.README
+  /usr/share/doc/gamin-0.1.9/AUTHORS
+  /usr/share/doc/gamin-0.1.9/COPYING
+  /usr/share/doc/gamin-0.1.9/COPYRIGHT
+  /usr/share/doc/gamin-0.1.9/ChangeLog
+  /usr/share/doc/gamin-0.1.9/INSTALL
+  /usr/share/doc/gamin-0.1.9/NEWS
+  /usr/share/doc/gamin-0.1.9/README
+  /usr/share/doc/gamin-0.1.9/TODO
 
-Files included in the pygamin package:
-
-  /usr/lib/python2.4/site-packages/gamin.py
-  /usr/lib/python2.4/site-packages/_gamin.dll
-  /usr/lib/python2.4/site-packages/_gamin.la
-
-Files included in the devel package:
-
+(gamin-devel)
   /usr/include/fam.h
   /usr/lib/libfam.dll.a
   /usr/lib/libfam.la
@@ -83,9 +76,19 @@ Files included in the devel package:
   /usr/lib/libgamin_shared.a
   /usr/lib/pkgconfig/gamin.pc
 
+(python-gamin)
+  /usr/lib/python2.5/site-packages/_gamin.dll
+  /usr/lib/python2.5/site-packages/_gamin.la
+  /usr/lib/python2.5/site-packages/gamin.py
+  /usr/lib/python2.5/site-packages/gamin.pyc
+  /usr/lib/python2.5/site-packages/gamin.pyo
+
 ------------------
 
 Port Notes:
+
+----- version 0.1.9-1 -----
+Version bump.
 
 ----- version 0.1.7-1 -----
 Version bump.
