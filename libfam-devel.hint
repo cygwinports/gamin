@@ -1,7 +1,7 @@
-category: Python
-requires: cygwin gamin python
+category: Libs
+requires: cygwin libfam0
 external-source: gamin
-sdesc: "File and directory monitoring system (Python bindings)"
+sdesc: "File and directory monitoring system (libdevel)"
 ldesc: "Gamin is a file and directory monitoring system defined to be
 a subset of the FAM (File Alteration Monitor) system.
 

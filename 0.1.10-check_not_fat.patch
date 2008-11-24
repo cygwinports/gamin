@@ -1,0 +1,258 @@
+--- origsrc/gamin-0.1.10/libgamin/gam_api.c	2008-11-24 11:41:55.631246800 -0600
++++ src/gamin-0.1.10/libgamin/gam_api.c	2008-11-24 11:52:10.178121800 -0600
+@@ -21,6 +21,14 @@
+ #include "gam_fork.h"
+ #include "gam_error.h"
+ 
++#ifdef __CYGWIN__
++#include <ctype.h>
++#include <sys/cygwin.h>
++#define WIN32_LEAN_AND_MEAN
++#define _WIN32_WINNT 0x0500
++#include <windows.h>
++#endif  /* __CYGWIN__ */
++
+ #define TEST_DEBUG
+ 
+ #define MAX_RETRIES 25
+@@ -193,6 +201,54 @@
+     return (ret);
+ }
+ 
++/**
++ * gamin_check_not_fat:
++ *
++ * On Cygwin, check if socket dir is on not a FAT drive.  This is
++ * necessary because gamin_check_secure_{dir,path} check permissions,
++ * and FAT drives do not have a permissions model; everything is 755.
++ *
++ * On other platforms, we assume that the socket dir is not on FAT.
++ *
++ * Returns 1 if <b>not</b> on a FAT drive, 0 if on FAT or in case of error.
++ */
++static int
++gamin_check_not_fat (const char *path)
++{
++#ifdef __CYGWIN__
++  char winpath[MAX_PATH];
++  char root[MAX_PATH];
++  char volname[MAX_PATH];
++  char fsname[MAX_PATH];
++  char *c;
++  BOOL (*pGVPN)(LPCTSTR, LPTSTR, DWORD);
++
++  cygwin_conv_to_full_win32_path(path, winpath);
++
++  pGVPN = GetProcAddress(LoadLibrary("kernel32"), "GetVolumePathName");
++  if (!pGVPN || !(pGVPN)(winpath, root, MAX_PATH))
++    {
++      strcpy(root, winpath);
++      if (isalpha(root[0]) && root[1] == ':' && root[2] == '\\')
++        root[3] = '\0';
++      else if (root[0] == '\\' && root[1] == '\\' && root[2] != '\\'
++               && (c = strchr (root + 3, '\\')))
++        c[1] = '\0';
++      else
++        fprintf (stderr, "GetVolumePathName: %d\n", GetLastError ());
++        return 0;
++    }
++  if (!GetVolumeInformation (root, volname, MAX_PATH, NULL,
++                             NULL, NULL, fsname, MAX_PATH))
++    {
++      fprintf (stderr, "GetVolumeInformation: %d\n", GetLastError ());
++      return 0;
++    }
++  if (!strncmp(fsname, "FAT", 3))	/* FAT, FAT32 */
++      return 0;
++#endif  /* __CYGWIN__ */
++  return 1;
++}
+ 
+ 
+ /************************************************************************
+@@ -214,6 +270,7 @@
+     char *dir;
+     struct stat st;
+     int ret;
++    int not_fat;
+ 
+     dir = gamin_get_socket_dir();
+     if (dir == NULL) {
+@@ -225,7 +282,8 @@
+ 	free(dir);
+ 	return(0);
+     }
+-    if (st.st_uid != getuid()) {
++    not_fat = gamin_check_not_fat(dir);
++    if (not_fat && (st.st_uid != getuid())) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket directory %s has different owner\n",
+ 		  dir);
+@@ -236,13 +294,13 @@
+ 		  dir);
+ 	goto unsafe;
+     }
+-    if (st.st_mode & (S_IRWXG|S_IRWXO)) {
++    if (not_fat && (st.st_mode & (S_IRWXG|S_IRWXO))) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket directory %s has wrong permissions\n",
+ 		  dir);
+ 	goto unsafe;
+     }
+-    if (((st.st_mode & (S_IRWXU)) != S_IRWXU)) {
++    if (not_fat && ((st.st_mode & (S_IRWXU)) != S_IRWXU)) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket directory %s has wrong permissions\n",
+ 		  dir);
+@@ -290,6 +348,7 @@
+ {
+     struct stat st;
+     int ret;
++    int not_fat;
+ 
+     ret = gamin_check_secure_dir();
+     if (ret <= 0)
+@@ -302,7 +361,8 @@
+     if (ret < 0)
+ 	return(0);
+     
+-    if (st.st_uid != getuid()) {
++	not_fat = gamin_check_not_fat(path);
++    if (not_fat && (st.st_uid != getuid())) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket %s has different owner\n",
+ 		  path);
+@@ -315,7 +375,7 @@
+ 	goto cleanup;
+     }
+ #endif
+-    if (st.st_mode & (S_IRWXG|S_IRWXO)) {
++    if (not_fat && (st.st_mode & (S_IRWXG|S_IRWXO))) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket %s has wrong permissions\n",
+ 		  path);
+@@ -399,7 +459,7 @@
+         }
+         if (retries < MAX_RETRIES) {
+             close(fd);
+-            usleep(50000);
++            usleep(250000);
+             retries++;
+             goto retry_start;
+         }
+--- origsrc/gamin-0.1.10/server/gam_channel.c	2008-11-24 11:41:55.646871800 -0600
++++ src/gamin-0.1.10/server/gam_channel.c	2008-11-24 12:04:34.561226000 -0600
+@@ -13,6 +13,52 @@
+ #include "gam_channel.h"
+ #include "gam_protocol.h"
+ 
++#ifdef __CYGWIN__
++#include <ctype.h>
++#include <sys/cygwin.h>
++#define WIN32_LEAN_AND_MEAN
++#define _WIN32_WINNT 0x0500
++#include <windows.h>
++#endif
++
++static int
++gam_check_not_fat (const char *path)
++{
++#ifdef __CYGWIN__
++  char winpath[MAX_PATH];
++  char root[MAX_PATH];
++  char volname[MAX_PATH];
++  char fsname[MAX_PATH];
++  char *c;
++  BOOL (*pGVPN)(LPCTSTR, LPTSTR, DWORD);
++
++  cygwin_conv_to_full_win32_path(path, winpath);
++
++  pGVPN = GetProcAddress(LoadLibrary("kernel32"), "GetVolumePathName");
++  if (!pGVPN || !(pGVPN)(winpath, root, MAX_PATH))
++    {
++      strcpy(root, winpath);
++      if (isalpha(root[0]) && root[1] == ':' && root[2] == '\\')
++        root[3] = '\0';
++      else if (root[0] == '\\' && root[1] == '\\' && root[2] != '\\'
++               && (c = strchr (root + 3, '\\')))
++        c[1] = '\0';
++      else
++        fprintf (stderr, "GetVolumePathName: %d\n", GetLastError ());
++        return 0;
++    }
++  if (!GetVolumeInformation (root, volname, MAX_PATH, NULL,
++                             NULL, NULL, fsname, MAX_PATH))
++    {
++      fprintf (stderr, "GetVolumeInformation: %d\n", GetLastError ());
++      return 0;
++    }
++  if (!strncmp(fsname, "FAT", 3))	/* FAT, FAT32 */
++      return 0;
++#endif  /* __CYGWIN__ */
++  return 1;
++}
++
+ /* #define CHANNEL_VERBOSE_DEBUGGING */
+ /************************************************************************
+  *									*
+@@ -422,6 +468,7 @@
+     struct stat st;
+     int ret;
+     int tries = 0;
++	int not_fat;
+ 
+     dir = gam_get_socket_dir();
+     if (dir == NULL) {
+@@ -445,7 +492,8 @@
+ 		g_free(dir);
+ 		return(FALSE);
+ 	    }
+-	    if (st.st_uid != getuid()) {
++		not_fat = gam_check_not_fat(dir);
++	    if (not_fat && (st.st_uid != getuid())) {
+ 		gam_error(DEBUG_INFO,
+ 		          "Socket directory %s has different owner\n",
+ 		          dir);
+@@ -456,13 +504,13 @@
+ 		          dir);
+ 	        break;
+ 	    }
+-	    if (st.st_mode & (S_IRWXG|S_IRWXO)) {
++	    if (not_fat && (st.st_mode & (S_IRWXG|S_IRWXO))) {
+ 		gam_error(DEBUG_INFO,
+ 		          "Socket directory %s has wrong permissions\n",
+ 		          dir);
+ 	        break;
+ 	    }
+-	    if (((st.st_mode & (S_IRWXU)) != S_IRWXU)) {
++	    if (not_fat && ((st.st_mode & (S_IRWXU)) != S_IRWXU)) {
+ 		gam_error(DEBUG_INFO,
+ 		          "Socket directory %s has wrong permissions\n",
+ 		          dir);
+@@ -531,6 +579,7 @@
+ {
+     struct stat st;
+     int ret;
++	int not_fat;
+ 
+     if (!gam_check_secure_dir())
+         return(FALSE);
+@@ -541,7 +590,8 @@
+     if (ret < 0)
+ 	return(TRUE);
+     
+-    if (st.st_uid != getuid()) {
++	not_fat = gam_check_not_fat(path);
++    if (not_fat && (st.st_uid != getuid())) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket %s has different owner\n",
+ 		  path);
+@@ -554,7 +604,7 @@
+ 	goto cleanup;
+     }
+ #endif
+-    if (st.st_mode & (S_IRWXG|S_IRWXO)) {
++    if (not_fat && (st.st_mode & (S_IRWXG|S_IRWXO))) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket %s has wrong permissions\n",
+ 		  path);

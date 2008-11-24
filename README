@@ -10,23 +10,23 @@ a subset of the FAM (File Alteration Monitor) system.
  4/ try to fix some other issues like resource consumption
 
 Runtime requirements:
-  cygwin-1.5.24-2
-  glib2-2.12.13-1
+  cygwin-1.5.25-15
+  glib2-2.16.6-1
 (python-gamin)
-  python-2.5.1-3
+  python-2.5.2-3
 
 Build requirements:
 (besides corresponding -devel packages)
-  cygwin-1.5.24-2
-  autoconf2.5-2.61-1
-  automake1.9-1.9.6-2
-  binutils-20060817-1
-  cygport-0.3.5-1
-  gawk-3.1.5-4
+  autoconf2.5-2.63-1
+  automake1.10-1.10.1-1
+  binutils-20080624-2
+  cygport-0.4.2-1
+  gawk-3.1.6-1
   gcc-core-3.4.4-3
-  libtool1.5-1.5.23a-2
+  gnome-common-2.24.0-1
+  libtool-2.2.6a-1
   make-3.81-1
-  pkg-config-0.21-1
+  pkg-config-0.23a-2
   sed-4.1.5-2
 
 Canonical website:
@@ -38,39 +38,48 @@ Canonical download:
 -------------------------------------------
 
 Build instructions:
-  unpack gamin-0.1.9-X-src.tar.bz2
+  unpack gamin-0.1.10-X-src.tar.bz2
     if you use setup to install this src package, it will be
 	 unpacked under /usr/src automatically
   cd /usr/src
-  cygport ./gamin-0.1.9-X.cygport all
+  cygport ./gamin-0.1.10-X.cygport all
 
 This will create:
-  /usr/src/gamin-0.1.9-X-src.tar.bz2
-  /usr/src/gamin-0.1.9-X.tar.bz2
-  /usr/src/gamin-devel-0.1.9-X.tar.bz2
-  /usr/src/python-gamin-0.1.9-X.tar.bz2
+  /usr/src/gamin-0.1.10-X-src.tar.bz2
+  /usr/src/gamin-0.1.10-X.tar.bz2
+  /usr/src/libfam-devel-0.1.10-X.tar.bz2
+  /usr/src/libfam0-0.1.10-X.tar.bz2
+  /usr/src/libgamin1-devel-0.1.10-X.tar.bz2
+  /usr/src/libgamin1_0-0.1.10-X.tar.bz2
+  /usr/src/python-gamin-0.1.10-X.tar.bz2
 
 -------------------------------------------
 
-Files included in the main package:
+Files included in the binary packages:
 
+(gamin)
+  /usr/lib/gamin/gam_server.exe
+  /usr/share/doc/gamin-0.1.10/AUTHORS
+  /usr/share/doc/gamin-0.1.10/COPYING
+  /usr/share/doc/gamin-0.1.10/COPYRIGHT
+  /usr/share/doc/gamin-0.1.10/ChangeLog
+  /usr/share/doc/gamin-0.1.10/INSTALL
+  /usr/share/doc/gamin-0.1.10/NEWS
+  /usr/share/doc/gamin-0.1.10/README
+  /usr/share/doc/gamin-0.1.10/TODO
+
+(libfam0)
   /usr/bin/cygfam-0.dll
-  /usr/bin/cyggamin-1-0.dll
-  /usr/sbin/gam_server.exe
-  /usr/share/doc/Cygwin/gamin-0.1.9.README
-  /usr/share/doc/gamin-0.1.9/AUTHORS
-  /usr/share/doc/gamin-0.1.9/COPYING
-  /usr/share/doc/gamin-0.1.9/COPYRIGHT
-  /usr/share/doc/gamin-0.1.9/ChangeLog
-  /usr/share/doc/gamin-0.1.9/INSTALL
-  /usr/share/doc/gamin-0.1.9/NEWS
-  /usr/share/doc/gamin-0.1.9/README
-  /usr/share/doc/gamin-0.1.9/TODO
 
-(gamin-devel)
+(libfam-devel)
   /usr/include/fam.h
   /usr/lib/libfam.dll.a
   /usr/lib/libfam.la
+
+(libgamin1_0)
+  /usr/bin/cyggamin-1-0.dll
+
+(libgamin1-devel)
   /usr/lib/libgamin-1.dll.a
   /usr/lib/libgamin-1.la
   /usr/lib/libgamin_shared.a
@@ -86,6 +95,9 @@ Files included in the main package:
 ------------------
 
 Port Notes:
+
+----- version 0.1.10-1 -----
+Version bump.
 
 ----- version 0.1.9-1 -----
 Version bump.
