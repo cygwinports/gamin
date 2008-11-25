@@ -23,7 +23,7 @@
 -_gamin_la_LIBADD = $(top_builddir)/libgamin/libgamin-1.la
 -_gamin_la_LDFLAGS = -module -avoid-version
 +_gamin_la_LIBADD = $(top_builddir)/libgamin/libgamin-1.la -lpython$(PYTHON_VERSION)
-+_gamin_la_LDFLAGS = -module -avoid-version -no-undefined
++_gamin_la_LDFLAGS = -module -avoid-version -no-undefined -L$(libdir)/python$(PYTHON_VERSION)/config
  
  python_PYTHON = gamin.py
  
