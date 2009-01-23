@@ -11,16 +11,16 @@ a subset of the FAM (File Alteration Monitor) system.
 
 Runtime requirements:
   cygwin-1.5.25-15
-  glib2-2.16.6-1
+  glib2-2.18.4-1
 (python-gamin)
-  python-2.5.2-3
+  python-2.5.4-1
 
 Build requirements:
 (besides corresponding -devel packages)
   autoconf2.5-2.63-1
-  automake1.10-1.10.1-1
+  automake1.10-1.10.1-2
   binutils-20080624-2
-  cygport-0.4.2-1
+  cygport-0.4.3-1
   gawk-3.1.6-1
   gcc-core-3.4.4-3
   gnome-common-2.24.0-1
@@ -95,6 +95,9 @@ Files included in the binary packages:
 ------------------
 
 Port Notes:
+
+----- version 0.1.10-2 -----
+Increased timeouts for server launch and disk polling.
 
 ----- version 0.1.10-1 -----
 Version bump.

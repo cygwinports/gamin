@@ -136,7 +136,7 @@
          if (retries < MAX_RETRIES) {
              close(fd);
 -            usleep(50000);
-+            usleep(250000);
++            usleep(1000000);
              retries++;
              goto retry_start;
          }

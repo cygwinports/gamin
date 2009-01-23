@@ -8,6 +8,7 @@ PATCH_URI="
 	mirror://portage/app-admin/${PN}/files/${PN}-0.1.9-freebsd.patch
 	0.1.10-no-undefined.patch
 	0.1.10-check_not_fat.patch
+	0.1.10-poll_timeout.patch
 "
 
 PKG_NAMES="${PN} libfam0 libfam-devel libgamin1_0 libgamin1-devel python-${PN}"
@@ -23,5 +24,6 @@ DIFF_EXCLUDES="Makefile"
 CPPFLAGS+=" -D_GNU_SOURCE"
 CYGCONF_ARGS="
 	--libexecdir=/usr/lib/gamin
+	--enable-debug-api
 	--without-threads
 "

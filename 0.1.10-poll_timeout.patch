@@ -1,0 +1,27 @@
+FIXME [1.7]: implement FS properties similar to linux with getmntent.
+
+In the meantime, provide a saner default that doesn't cause 100% CPU usage.
+
+--- origsrc/gamin-0.1.10/server/gam_fs.c	2009-01-22 22:28:35.341427700 -0600
++++ src/gamin-0.1.10/server/gam_fs.c	2009-01-22 22:31:43.528927700 -0600
+@@ -15,7 +15,7 @@
+ #include "gam_error.h"
+ #include "gam_fs.h"
+ 
+-#define DEFAULT_POLL_TIMEOUT 0
++#define DEFAULT_POLL_TIMEOUT 5
+ 
+ typedef struct _gam_fs_properties {
+ 	char * 		fsname;
+@@ -289,6 +289,11 @@ gam_fs_init (void)
+ 
+ 		mtab_sbuf = sbuf;
+ 	}
++#elif defined(__CYGWIN__)
++	if (initialized == FALSE)
++	{
++		initialized = TRUE;
++	}
+ #endif
+ }
+ 
