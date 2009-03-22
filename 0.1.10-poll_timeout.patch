@@ -1,27 +1,29 @@
-FIXME [1.7]: implement FS properties similar to linux with getmntent.
-
-In the meantime, provide a saner default that doesn't cause 100% CPU usage.
-
---- origsrc/gamin-0.1.10/server/gam_fs.c	2009-01-22 22:28:35.341427700 -0600
-+++ src/gamin-0.1.10/server/gam_fs.c	2009-01-22 22:31:43.528927700 -0600
-@@ -15,7 +15,7 @@
- #include "gam_error.h"
- #include "gam_fs.h"
- 
--#define DEFAULT_POLL_TIMEOUT 0
-+#define DEFAULT_POLL_TIMEOUT 5
- 
- typedef struct _gam_fs_properties {
- 	char * 		fsname;
-@@ -289,6 +289,11 @@ gam_fs_init (void)
- 
- 		mtab_sbuf = sbuf;
- 	}
-+#elif defined(__CYGWIN__)
-+	if (initialized == FALSE)
-+	{
-+		initialized = TRUE;
-+	}
- #endif
+--- origsrc/gamin-0.1.10/server/gam_fs.c	2009-03-22 13:50:20.656250000 -0500
++++ src/gamin-0.1.10/server/gam_fs.c	2009-02-16 03:09:08.203125000 -0600
+@@ -119,7 +119,7 @@ gam_fs_filesystem_sort_cb (gconstpointer
+ 	return strlen(fsb->path) - strlen (fsa->path);
  }
  
+-#ifdef __linux__
++#if defined(__linux__) || defined(__CYGWIN__)
+ static void
+ gam_fs_scan_mtab (void)
+ {
+@@ -209,7 +209,7 @@ gam_fs_getmntinfo (void)
+ void
+ gam_fs_init (void)
+ {
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__CYGWIN__)
+ 	if (initialized == FALSE)
+ 	{
+ 		initialized = TRUE;
+@@ -219,6 +219,8 @@ gam_fs_init (void)
+ 		gam_fs_set ("reiserfs", GFS_MT_DEFAULT, 0);
+ 		gam_fs_set ("novfs", GFS_MT_POLL, 30);
+ 		gam_fs_set ("nfs", GFS_MT_POLL, 5);
++		gam_fs_set ("ntfs", GFS_MT_POLL, 5);
++		gam_fs_set ("vfat", GFS_MT_POLL, 5);
+ 		if (stat("/etc/mtab", &mtab_sbuf) != 0)
+ 		{
+ 			GAM_DEBUG(DEBUG_INFO, "Could not stat /etc/mtab\n");

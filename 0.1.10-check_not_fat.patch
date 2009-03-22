@@ -117,7 +117,7 @@
  	return(0);
      
 -    if (st.st_uid != getuid()) {
-+	not_fat = gamin_check_not_fat(path);
++    not_fat = gamin_check_not_fat(path);
 +    if (not_fat && (st.st_uid != getuid())) {
  	gam_error(DEBUG_INFO,
  		  "Socket %s has different owner\n",
@@ -199,7 +199,7 @@
      struct stat st;
      int ret;
      int tries = 0;
-+	int not_fat;
++    int not_fat;
  
      dir = gam_get_socket_dir();
      if (dir == NULL) {
@@ -233,7 +233,7 @@
  {
      struct stat st;
      int ret;
-+	int not_fat;
++    int not_fat;
  
      if (!gam_check_secure_dir())
          return(FALSE);
@@ -242,7 +242,7 @@
  	return(TRUE);
      
 -    if (st.st_uid != getuid()) {
-+	not_fat = gam_check_not_fat(path);
++    not_fat = gam_check_not_fat(path);
 +    if (not_fat && (st.st_uid != getuid())) {
  	gam_error(DEBUG_INFO,
  		  "Socket %s has different owner\n",
