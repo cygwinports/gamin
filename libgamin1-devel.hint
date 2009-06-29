@@ -1,5 +1,5 @@
 category: Libs
-requires: cygwin libfam-devel libgamin1_0
+requires: libfam-devel libgamin1_0
 external-source: gamin
 sdesc: "File and directory monitoring system (libdevel)"
 ldesc: "Gamin is a file and directory monitoring system defined to be
