@@ -10,25 +10,25 @@ a subset of the FAM (File Alteration Monitor) system.
  4/ try to fix some other issues like resource consumption
 
 Runtime requirements:
-  cygwin-1.7.0-45
-  libgcc1-4.3.2-2
-  libglib2.0_0-2.20.0-1
+  cygwin-1.7.5-1
+  libgcc1-4.3.4-3
+  libglib2.0_0-2.22.4-2
 (python-gamin)
-  python-2.5.4-10
+  python-2.6.5-1
 
 Build requirements:
 (besides corresponding -devel packages)
-  autoconf2.5-2.63-10
-  automake1.10-1.10.1-10
-  binutils-20080624-2
-  cygport-0.9.6-1
-  gawk-3.1.6-2
-  gcc4-core-4.3.2-2
-  gnome-common-2.24.0-1
-  libtool-2.2.7a-1
+  autoconf2.5-2.65-1
+  automake1.10-1.10.3-1
+  binutils-2.20.51-1
+  cygport-0.9.83-1
+  gawk-3.1.7-1
+  gcc4-core-4.3.4-3
+  gnome-common-2.28.0-1
+  libtool-2.2.7a-15
   make-3.81-2
   pkg-config-0.23a-2
-  sed-4.1.5-2
+  sed-4.2.1-1
 
 Canonical website:
   http://www.gnome.org/~veillard/gamin/
@@ -56,45 +56,10 @@ This will create:
 
 -------------------------------------------
 
-Files included in the binary packages:
-
-(gamin)
-  /usr/lib/gamin/gam_server.exe
-  /usr/share/doc/gamin/AUTHORS
-  /usr/share/doc/gamin/COPYING
-  /usr/share/doc/gamin/COPYRIGHT
-  /usr/share/doc/gamin/ChangeLog
-  /usr/share/doc/gamin/NEWS
-  /usr/share/doc/gamin/README
-  /usr/share/doc/gamin/TODO
-
-(libfam0)
-  /usr/bin/cygfam-0.dll
-
-(libfam-devel)
-  /usr/include/fam.h
-  /usr/lib/libfam.dll.a
-  /usr/lib/libfam.la
-
-(libgamin1_0)
-  /usr/bin/cyggamin-1-0.dll
-
-(libgamin1-devel)
-  /usr/lib/libgamin-1.dll.a
-  /usr/lib/libgamin-1.la
-  /usr/lib/libgamin_shared.a
-  /usr/lib/pkgconfig/gamin.pc
-
-(python-gamin)
-  /usr/lib/python2.5/site-packages/_gamin.dll
-  /usr/lib/python2.5/site-packages/_gamin.la
-  /usr/lib/python2.5/site-packages/gamin.py
-  /usr/lib/python2.5/site-packages/gamin.pyc
-  /usr/lib/python2.5/site-packages/gamin.pyo
-
-------------------
-
 Port Notes:
+
+----- version 0.1.10-11 -----
+Rebuilt bindings for Python 2.6.
 
 ----- version 0.1.10-10 -----
 Initial release for Cygwin 1.7
