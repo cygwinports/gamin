@@ -1,6 +1,12 @@
 inherit python gnome2
 
-DESCRIPTION="File Alteration Monitor system"
+NAME="gamin"
+VERSION=0.1.10
+RELEASE=13
+CATEGORY="Libs"
+SUMMARY="File Alteration Monitor system"
+DESCRIPTION="Gamin is a file and directory monitoring system defined to be
+a subset of the FAM (File Alteration Monitor) system."
 HOMEPAGE="http://people.gnome.org/~veillard/gamin/"
 SRC_URI="http://people.gnome.org/~veillard/gamin/sources/${P}.tar.gz"
 PATCH_URI="
@@ -12,11 +18,21 @@ PATCH_URI="
 "
 
 PKG_NAMES="${PN} libfam0 libfam-devel libgamin1_0 libgamin1-devel python-${PN}"
+gamin_SUMMARY="${SUMMARY} (daemon)"
 gamin_CONTENTS="usr/lib/gamin/ usr/share/doc/"
+libfam0_SUMMARY="${SUMMARY} (runtime library)"
+libfam0_REQUIRES="gamin"
 libfam0_CONTENTS="usr/bin/cygfam-0.dll"
-libfam_devel_CONTENTS="usr/include/ usr/lib/libfam.*"
+libfam_devel_SUMMARY="${SUMMARY} (libdevel)"
+libfam_devel_CONTENTS="usr/include/ usr/lib/lib* usr/lib/pkgconfig/"
+libgamin1_0_SUMMARY="${SUMMARY} (runtime library)"
+libgamin1_0_REQUIRES="gamin"
 libgamin1_0_CONTENTS="usr/bin/cyggamin-1-0.dll"
-libgamin1_devel_CONTENTS="usr/lib/libgamin* usr/lib/pkgconfig/"
+libgamin1_devel_CATEGORY="_obsolete"
+libgamin1_devel_SUMMARY="Obsolete package"
+libgamin1_devel_REQUIRES="libfam-devel"
+python_gamin_CATEGORY="Python"
+python_gamin_SUMMARY="${SUMMARY} (Python bindings)"
 python_gamin_CONTENTS="${PYTHON_SITELIB#/}"
 
 DIFF_EXCLUDES="Makefile"
@@ -27,5 +43,3 @@ CYGCONF_ARGS="
 	--enable-debug-api
 	--without-threads
 "
-
-KEEP_LA_FLAGS="none"
