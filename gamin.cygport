@@ -42,4 +42,5 @@ CYGCONF_ARGS="
 	--libexecdir=/usr/lib/gamin
 	--enable-debug-api
 	--without-threads
+	${BOOTSTRAP+--disable-server}
 "

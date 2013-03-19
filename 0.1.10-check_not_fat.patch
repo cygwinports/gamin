@@ -41,9 +41,9 @@
 +  char *c;
 +  BOOL (*pGVPN)(LPCTSTR, LPTSTR, DWORD);
 +
-+  cygwin_conv_to_full_win32_path(path, winpath);
++  cygwin_conv_path(CCP_POSIX_TO_WIN_A, path, winpath, MAX_PATH);
 +
-+  pGVPN = GetProcAddress(LoadLibrary("kernel32"), "GetVolumePathName");
++  pGVPN = GetProcAddress(LoadLibrary("kernel32"), "GetVolumePathNameA");
 +  if (!pGVPN || !(pGVPN)(winpath, root, MAX_PATH))
 +    {
 +      strcpy(root, winpath);
@@ -165,9 +165,9 @@
 +  char *c;
 +  BOOL (*pGVPN)(LPCTSTR, LPTSTR, DWORD);
 +
-+  cygwin_conv_to_full_win32_path(path, winpath);
++  cygwin_conv_path(CCP_POSIX_TO_WIN_A, path, winpath, MAX_PATH);
 +
-+  pGVPN = GetProcAddress(LoadLibrary("kernel32"), "GetVolumePathName");
++  pGVPN = GetProcAddress(LoadLibrary("kernel32"), "GetVolumePathNameA");
 +  if (!pGVPN || !(pGVPN)(winpath, root, MAX_PATH))
 +    {
 +      strcpy(root, winpath);
