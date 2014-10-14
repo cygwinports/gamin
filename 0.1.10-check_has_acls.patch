@@ -1,0 +1,135 @@
+--- origsrc/gamin-0.1.10/libgamin/gam_api.c	2014-10-14 15:07:38.199071900 -0500
++++ src/gamin-0.1.10/libgamin/gam_api.c	2014-10-14 15:07:53.437006900 -0500
+@@ -214,6 +214,7 @@ gamin_check_secure_dir(void)
+     char *dir;
+     struct stat st;
+     int ret;
++    int has_acls;
+ 
+     dir = gamin_get_socket_dir();
+     if (dir == NULL) {
+@@ -225,7 +226,8 @@ gamin_check_secure_dir(void)
+ 	free(dir);
+ 	return(0);
+     }
+-    if (st.st_uid != getuid()) {
++    has_acls = pathconf (dir, _PC_POSIX_PERMISSIONS);
++    if (has_acls && (st.st_uid != getuid())) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket directory %s has different owner\n",
+ 		  dir);
+@@ -236,13 +238,13 @@ gamin_check_secure_dir(void)
+ 		  dir);
+ 	goto unsafe;
+     }
+-    if (st.st_mode & (S_IRWXG|S_IRWXO)) {
++    if (has_acls && (st.st_mode & (S_IRWXG|S_IRWXO))) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket directory %s has wrong permissions\n",
+ 		  dir);
+ 	goto unsafe;
+     }
+-    if (((st.st_mode & (S_IRWXU)) != S_IRWXU)) {
++    if (has_acls && ((st.st_mode & (S_IRWXU)) != S_IRWXU)) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket directory %s has wrong permissions\n",
+ 		  dir);
+@@ -290,6 +292,7 @@ gamin_check_secure_path(const char *path
+ {
+     struct stat st;
+     int ret;
++    int has_acls;
+ 
+     ret = gamin_check_secure_dir();
+     if (ret <= 0)
+@@ -302,7 +305,8 @@ gamin_check_secure_path(const char *path
+     if (ret < 0)
+ 	return(0);
+     
+-    if (st.st_uid != getuid()) {
++    has_acls = pathconf (path, _PC_POSIX_PERMISSIONS);
++    if (has_acls && (st.st_uid != getuid())) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket %s has different owner\n",
+ 		  path);
+@@ -315,7 +319,7 @@ gamin_check_secure_path(const char *path
+ 	goto cleanup;
+     }
+ #endif
+-    if (st.st_mode & (S_IRWXG|S_IRWXO)) {
++    if (has_acls && (st.st_mode & (S_IRWXG|S_IRWXO))) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket %s has wrong permissions\n",
+ 		  path);
+@@ -399,7 +403,7 @@ gamin_connect_unix_socket(const char *pa
+         }
+         if (retries < MAX_RETRIES) {
+             close(fd);
+-            usleep(50000);
++            usleep(1000000);
+             retries++;
+             goto retry_start;
+         }
+--- origsrc/gamin-0.1.10/server/gam_channel.c	2014-10-14 15:07:38.202572400 -0500
++++ src/gamin-0.1.10/server/gam_channel.c	2014-10-14 15:07:53.447508200 -0500
+@@ -422,6 +422,7 @@ gam_check_secure_dir(void)
+     struct stat st;
+     int ret;
+     int tries = 0;
++    int has_acls;
+ 
+     dir = gam_get_socket_dir();
+     if (dir == NULL) {
+@@ -445,7 +446,8 @@ create:
+ 		g_free(dir);
+ 		return(FALSE);
+ 	    }
+-	    if (st.st_uid != getuid()) {
++	    has_acls = pathconf (dir, _PC_POSIX_PERMISSIONS);
++	    if (has_acls && (st.st_uid != getuid())) {
+ 		gam_error(DEBUG_INFO,
+ 		          "Socket directory %s has different owner\n",
+ 		          dir);
+@@ -456,13 +458,13 @@ create:
+ 		          dir);
+ 	        break;
+ 	    }
+-	    if (st.st_mode & (S_IRWXG|S_IRWXO)) {
++	    if (has_acls && (st.st_mode & (S_IRWXG|S_IRWXO))) {
+ 		gam_error(DEBUG_INFO,
+ 		          "Socket directory %s has wrong permissions\n",
+ 		          dir);
+ 	        break;
+ 	    }
+-	    if (((st.st_mode & (S_IRWXU)) != S_IRWXU)) {
++	    if (has_acls && ((st.st_mode & (S_IRWXU)) != S_IRWXU)) {
+ 		gam_error(DEBUG_INFO,
+ 		          "Socket directory %s has wrong permissions\n",
+ 		          dir);
+@@ -531,6 +533,7 @@ gam_check_secure_path(const char *path)
+ {
+     struct stat st;
+     int ret;
++    int has_acls;
+ 
+     if (!gam_check_secure_dir())
+         return(FALSE);
+@@ -541,7 +544,8 @@ gam_check_secure_path(const char *path)
+     if (ret < 0)
+ 	return(TRUE);
+     
+-    if (st.st_uid != getuid()) {
++    has_acls = pathconf (path, _PC_POSIX_PERMISSIONS);
++    if (has_acls && (st.st_uid != getuid())) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket %s has different owner\n",
+ 		  path);
+@@ -554,7 +558,7 @@ gam_check_secure_path(const char *path)
+ 	goto cleanup;
+     }
+ #endif
+-    if (st.st_mode & (S_IRWXG|S_IRWXO)) {
++    if (has_acls && (st.st_mode & (S_IRWXG|S_IRWXO))) {
+ 	gam_error(DEBUG_INFO,
+ 		  "Socket %s has wrong permissions\n",
+ 		  path);

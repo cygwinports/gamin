@@ -2,7 +2,7 @@ inherit python gnome2
 
 NAME="gamin"
 VERSION=0.1.10
-RELEASE=14
+RELEASE=15
 CATEGORY="Libs"
 SUMMARY="File Alteration Monitor system"
 DESCRIPTION="Gamin is a file and directory monitoring system defined to be
@@ -15,7 +15,7 @@ PATCH_URI="
 	http://pkgs.fedoraproject.org/cgit/gamin.git/plain/gamin-manape.patch
 	http://pkgs.fedoraproject.org/cgit/gamin.git/plain/0002-Fix-compilation-of-recent-glib-removing-G_CONST_RETU.patch
 	0.1.10-no-undefined.patch
-	0.1.10-check_not_fat.patch
+	0.1.10-check_has_acls.patch
 	0.1.10-poll_timeout.patch
 "
 
